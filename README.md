@@ -2,6 +2,7 @@
 
 > **Projeto 1: Explorando Progressões Aritméticas (PA) e Progressões Geométricas (PG)**  
 > **Disciplina:** Pensamento Computacional e Algoritmos  
+> 🌐 **Link da Aplicação Online (Live Demo):** [https://melquizedeque-torres.github.io/pa-pg-lab/](https://melquizedeque-torres.github.io/pa-pg-lab/)  
 > **Tecnologias Frontend:** HTML5 Semântico, CSS3 Moderno (Glassmorphism + Bento Grid) e JavaScript Puro (ES6+)  
 > **Tecnologia Backend/CLI:** Python 3 (.py)  
 
