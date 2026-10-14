@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PA & PG LAB | Laboratório Interativo de Progressões</title>
+  <meta name="description" content="Laboratório visual e interativo para exploração, cálculo e análise de Progressões Aritméticas (PA) e Geométricas (PG). Desafio Etapa 7.">
+  
+  <!-- Fontes do Google: Outfit (moderna/geométrica) e JetBrains Mono (precisão matemática) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+/* ==========================================================================
+   PA & PG LAB - DESIGN SYSTEM & ESTILOS GLOBAIS
+   Conceito: Scientific Glassmorphism + Bento Grid (Dark & Light Mode)
+   ========================================================================== */
+
+:root {
+  /* Tipografia */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace;
+
+  /* Transições */
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Curvaturas */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Tema PA (Progressão Aritmética - Linear, Fria, Ciano/Azul) */
+  --pa-primary: #06b6d4;
+  --pa-secondary: #3b82f6;
+  --pa-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --pa-glow: rgba(6, 182, 212, 0.35);
+  --pa-badge-bg: rgba(6, 182, 212, 0.15);
+  --pa-badge-text: #22d3ee;
+
+  /* Tema PG (Progressão Geométrica - Exponencial, Quente, Violeta/Magenta) */
+  --pg-primary: #8b5cf6;
+  --pg-secondary: #ec4899;
+  --pg-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  --pg-glow: rgba(139, 92, 246, 0.35);
+  --pg-badge-bg: rgba(139, 92, 246, 0.15);
+  --pg-badge-text: #c084fc;
+
+  /* Status Colors */
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+/* ==========================================================================
+   TEMA ESCURO (PADRÃO / SCIENTIFIC LAB)
+   ========================================================================== */
+body.theme-dark {
+  --bg-app: #080c16;
+  --bg-card: rgba(15, 23, 42, 0.72);
+  --bg-card-hover: rgba(22, 33, 58, 0.85);
+  --bg-input: rgba(10, 16, 30, 0.85);
+  --bg-pill: rgba(255, 255, 255, 0.05);
+  --bg-pill-hover: rgba(255, 255, 255, 0.1);
+  --bg-modal: rgba(13, 19, 33, 0.96);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.22);
+  --border-card: rgba(255, 255, 255, 0.09);
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --text-inverse: #0f172a;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-hover: 0 16px 40px -10px rgba(0, 0, 0, 0.7), 0 0 20px var(--theme-glow);
+
+  --ambient-1: rgba(6, 182, 212, 0.12);
+  --ambient-2: rgba(139, 92, 246, 0.12);
+  --ambient-3: rgba(59, 130, 246, 0.08);
+}
+
+/* ==========================================================================
+   TEMA CLARO (MINIMALIST DASHBOARD)
+   ========================================================================== */
+body.theme-light {
+  --bg-app: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-hover: rgba(255, 255, 255, 1);
+  --bg-input: #ffffff;
+  --bg-pill: rgba(0, 0, 0, 0.04);
+  --bg-pill-hover: rgba(0, 0, 0, 0.08);
+  --bg-modal: rgba(255, 255, 255, 0.98);
+
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-focus: rgba(0, 0, 0, 0.25);
+  --border-card: rgba(0, 0, 0, 0.08);
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+  --text-inverse: #ffffff;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 10px 25px -8px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 16px 35px -8px rgba(0, 0, 0, 0.12), 0 0 15px var(--theme-glow);
+
+  --ambient-1: rgba(6, 182, 212, 0.18);
+  --ambient-2: rgba(139, 92, 246, 0.15);
+  --ambient-3: rgba(59, 130, 246, 0.12);
+}
+
+/* ==========================================================================
+   VARIÁVEIS DINÂMICAS DE PROGRESSÃO ATIVA (PA vs PG)
+   ========================================================================== */
+body[data-progression="pa"] {
+  --theme-primary: var(--pa-primary);
+  --theme-secondary: var(--pa-secondary);
+  --theme-gradient: var(--pa-gradient);
+  --theme-glow: var(--pa-glow);
+  --theme-badge-bg: var(--pa-badge-bg);
+  --theme-badge-text: var(--pa-badge-text);
+}
+
+body[data-progression="pg"] {
+  --theme-primary: var(--pg-primary);
+  --theme-secondary: var(--pg-secondary);
+  --theme-gradient: var(--pg-gradient);
+  --theme-glow: var(--pg-glow);
+  --theme-badge-bg: var(--pg-badge-bg);
+  --theme-badge-text: var(--pg-badge-text);
+}
+
+/* ==========================================================================
+   RESET & BASE
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  transition: background-color var(--transition-smooth), color var(--transition-smooth);
+}
+
+/* ==========================================================================
+   LUZES AMBIENTAIS DE FUNDO (AMBIENT GLOWS)
+   ========================================================================== */
+.ambient-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(130px);
+  pointer-events: none;
+  z-index: 0;
+  transition: all 0.8s ease;
+}
+
+.glow-1 {
+  top: -150px;
+  left: 10%;
+  width: 550px;
+  height: 550px;
+  background: var(--ambient-1);
+}
+
+.glow-2 {
+  top: 30%;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: var(--ambient-2);
+}
+
+.glow-3 {
+  bottom: -100px;
+  left: 30%;
+  width: 600px;
+  height: 600px;
+  background: var(--ambient-3);
+}
+
+/* ==========================================================================
+   CONTAINER PRINCIPAL
+   ========================================================================== */
+.app-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   CABEÇALHO
+   ========================================================================== */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 24px;
+}
+
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--theme-primary);
+  background: var(--theme-badge-bg);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  width: fit-content;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--theme-primary);
+  box-shadow: 0 0 8px var(--theme-primary);
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.brand-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--theme-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 16px var(--theme-glow);
+  flex-shrink: 0;
+}
+
+.brand-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.gradient-text {
+  background: var(--theme-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botões do Header */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+
+.btn-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+body.theme-dark .icon-moon { display: none; }
+body.theme-dark .icon-sun { display: block; }
+body.theme-light .icon-moon { display: block; }
+body.theme-light .icon-sun { display: none; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+
+.btn-ghost svg {
+  width: 16px;
+  height: 16px;
+  color: var(--theme-primary);
+}
+
+/* ==========================================================================
+   BARRA DE SELEÇÃO PRINCIPAL: PA vs PG
+   ========================================================================== */
+.type-selector-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.segmented-control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+}
+
+.segment-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-smooth);
+  position: relative;
+}
+
+.segment-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-pill);
+}
+
+.segment-btn.active {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+  color: var(--text-main);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.segment-icon {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-pill);
+  color: var(--text-main);
+  transition: all var(--transition-fast);
+}
+
+.segment-btn.active .segment-icon {
+  background: var(--theme-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 12px var(--theme-glow);
+}
+
+.segment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.segment-label {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.segment-sub {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.segment-btn.active .segment-sub {
+  color: var(--text-muted);
+}
+
+.segment-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-pill);
+  color: var(--text-dim);
+}
+
+.segment-btn.active .segment-badge {
+  background: var(--theme-badge-bg);
+  color: var(--theme-badge-text);
+}
+
+/* Banner de Fórmulas Matemáticas */
+.formula-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 18px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+  font-size: 0.82rem;
+}
+
+.formula-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formula-tag {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.formula-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--theme-primary);
+  background: var(--theme-badge-bg);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+}
+
+.formula-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border-subtle);
+}
+
+.formula-desc {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   PRESETS RÁPIDOS DA ETAPA 4 (TESTES)
+   ========================================================================== */
+.presets-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 24px;
+}
+
+.presets-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.presets-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.presets-title svg {
+  width: 14px;
+  height: 14px;
+  color: var(--warning);
+}
+
+.presets-hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.presets-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  background: var(--bg-pill);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.preset-pill:hover {
+  background: var(--bg-pill-hover);
+  color: var(--text-main);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.dot-pa { background: var(--pa-primary); }
+.dot-pg { background: var(--pg-primary); }
+
+/* ==========================================================================
+   GRID DO DASHBOARD PRINCIPAL (BENTO FORMAT)
+   ========================================================================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estilo Base de Card Glassmorphism */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-smooth);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--theme-primary);
+  text-transform: uppercase;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.btn-text-subtle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.btn-text-subtle:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   FORMULÁRIO DE ENTRADAS (CARD DA ESQUERDA)
+   ========================================================================== */
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mode-switch-wrapper {
+  background: var(--bg-input);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.mode-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mode-tab svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mode-tab:hover {
+  color: var(--text-main);
+}
+
+.mode-tab.active {
+  background: var(--bg-card-hover);
+  color: var(--theme-primary);
+  border-color: var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.hidden {
+  display: none;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-label .symbol {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--theme-primary);
+}
+
+.field-hint {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.terms-counter-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--theme-primary);
+  background: var(--theme-badge-bg);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 50px 11px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px var(--theme-glow);
+}
+
+.input-stepper {
+  position: absolute;
+  right: 6px;
+  display: flex;
+  gap: 3px;
+}
+
+.stepper-btn {
+  width: 26px;
+  height: 26px;
+  background: var(--bg-pill);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.stepper-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+/* Slider de Quantidade */
+.slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-subtle);
+  outline: none;
+  cursor: pointer;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--theme-gradient);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--theme-glow);
+  transition: transform var(--transition-fast);
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  padding: 0 2px;
+}
+
+.field-note {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* Botão Primário de Ação */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  background: var(--theme-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px var(--theme-glow);
+  transition: all var(--transition-fast);
+  margin-top: 6px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px var(--theme-glow);
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary svg {
+  width: 18px;
+  height: 18px;
+}
+
+.card-footer-info {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 18px;
+}
+
+.card-footer-info strong {
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.card-footer-info code {
+  font-family: var(--font-mono);
+  color: var(--theme-primary);
+}
+
+.info-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--success);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   COLUNA DA DIREITA: RESULTADOS
+   ========================================================================== */
+.results-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Bento Summary Grid (4 Cards de Estatísticas) */
+.bento-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-smooth);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-focus);
+}
+
+.stat-card.highlight-card {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6, 182, 212, 0.08) 100%);
+}
+
+body[data-progression="pg"] .stat-card.highlight-card {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(139, 92, 246, 0.08) 100%);
+}
+
+.stat-card.highlight-sum {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(16, 185, 129, 0.08) 100%);
+}
+
+.stat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.stat-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--theme-primary);
+  background: var(--theme-badge-bg);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.stat-value-container {
+  margin: 10px 0;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  word-break: break-all;
+}
+
+.stat-card.highlight-card .stat-value {
+  background: var(--theme-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-card.highlight-sum .stat-value {
+  color: var(--success);
+}
+
+.stat-value-secondary {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 10px 0;
+}
+
+.behavior-indicator {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--theme-primary);
+}
+
+.stat-card-footer {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   CARD DA SEQUÊNCIA GERADA
+   ========================================================================== */
+.sequence-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ghost-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-pill);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-ghost-sm:hover {
+  background: var(--bg-pill-hover);
+  color: var(--text-main);
+  border-color: var(--border-focus);
+}
+
+.btn-ghost-sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Formato em Texto Padrão Apostila */
+.plain-format-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.format-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.format-code {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* Chips da Sequência */
+.sequence-chips-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chips-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.sequence-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.sequence-chips-grid::-webkit-scrollbar {
+  width: 5px;
+}
+.sequence-chips-grid::-webkit-scrollbar-thumb {
+  background: var(--border-focus);
+  border-radius: 4px;
+}
+
+.term-chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-pill);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  min-width: 62px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  animation: chipAppear 0.3s ease forwards;
+}
+
+@keyframes chipAppear {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.term-chip:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--theme-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--theme-glow);
+}
+
+.term-chip.is-last {
+  border-color: var(--theme-primary);
+  background: var(--theme-badge-bg);
+}
+
+.chip-index {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.chip-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 2px;
+}
+
+.term-chip.is-last .chip-value {
+  color: var(--theme-primary);
+}
+
+/* ==========================================================================
+   CARD DO GRÁFICO (CANVAS NATIVO)
+   ========================================================================== */
+.chart-card {
+  position: relative;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-color-line {
+  width: 12px;
+  height: 3px;
+  background: var(--theme-primary);
+  border-radius: 2px;
+}
+
+.legend-color-sum {
+  width: 12px;
+  height: 3px;
+  background: var(--success);
+  border-radius: 2px;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background: var(--bg-input);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+#progressionCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-modal);
+  border: 1px solid var(--border-focus);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+  transform: translate(-50%, -120%);
+  white-space: nowrap;
+  z-index: 10;
+  transition: opacity var(--transition-fast);
+}
+
+.chart-tooltip.hidden {
+  opacity: 0;
+}
+
+/* ==========================================================================
+   TABELA DE MEMÓRIA DE CÁLCULO (ETAPA 3)
+   ========================================================================== */
+.detailed-analysis-section {
+  margin-top: 24px;
+}
+
+.section-explanation {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.section-explanation code {
+  font-family: var(--font-mono);
+  color: var(--theme-primary);
+}
+
+.table-responsive {
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  transition: max-height var(--transition-smooth);
+}
+
+.table-responsive.collapsed {
+  max-height: 0;
+  border: none;
+  overflow: hidden;
+}
+
+.calc-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.82rem;
+}
+
+.calc-table th {
+  background: var(--bg-card);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 14px;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 2;
+}
+
+.calc-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.calc-table tbody tr:hover {
+  background: var(--bg-pill);
+}
+
+.calc-table td:nth-child(1),
+.calc-table td:nth-child(3),
+.calc-table td:nth-child(4) {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.calc-table td:nth-child(3) {
+  color: var(--theme-primary);
+}
+
+.calc-table td:nth-child(4) {
+  color: var(--success);
+}
+
+/* ==========================================================================
+   RODAPÉ
+   ========================================================================== */
+.app-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer-content strong {
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   MODAL DE DOCUMENTAÇÃO E CRITÉRIOS
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  animation: fadeIn 0.25s ease;
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-dialog {
+  background: var(--bg-modal);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  max-width: 780px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--theme-primary);
+  text-transform: uppercase;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.btn-close:hover {
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.modal-tab-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-tab-btn:hover {
+  color: var(--text-main);
+}
+
+.modal-tab-btn.active {
+  background: var(--theme-badge-bg);
+  color: var(--theme-primary);
+}
+
+.modal-tab-content {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-tab-content.active {
+  display: flex;
+}
+
+.modal-tab-content h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-tab-content p {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Brainstorm Cards */
+.brainstorm-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.brainstorm-card {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-pill);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brainstorm-card.selected {
+  border-color: var(--theme-primary);
+  background: var(--theme-badge-bg);
+}
+
+.badge-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--theme-primary);
+  letter-spacing: 0.05em;
+}
+
+.brainstorm-card h4 {
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+
+.brainstorm-card ul {
+  padding-left: 18px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Q&A Item (Etapa 5) */
+.qa-item {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qa-item h4 {
+  font-size: 0.88rem;
+  color: var(--theme-primary);
+}
+
+.qa-item p {
+  font-size: 0.82rem;
+  color: var(--text-main);
+}
+
+.qa-item code {
+  font-family: var(--font-mono);
+  background: var(--bg-pill);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--theme-primary);
+}
+
+/* Tabela de Critérios */
+.criteria-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.criteria-table th, .criteria-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.criteria-table th {
+  background: var(--bg-card);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.criteria-table .total-row {
+  background: var(--theme-badge-bg);
+  font-weight: 700;
+}
+
+.status-badge.ok {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary-sm {
+  padding: 8px 16px;
+  background: var(--theme-gradient);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-modal);
+  border: 1px solid var(--theme-primary);
+  color: var(--text-main);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  animation: slideInRight 0.25s ease;
+}
+
+.toast.hidden { display: none; }
+
+.toast svg {
+  width: 16px;
+  height: 16px;
+  color: var(--success);
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+</style>
+</head>
+<body class="theme-dark" data-progression="pa">
+  <!-- Efeitos de iluminação de fundo (Luzes de ambiente) -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <div class="app-container">
+    <!-- CABEÇALHO -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-badge">
+          <span class="badge-dot"></span>
+          <span>PROJETO 1 • ETAPA 7</span>
+        </div>
+        <div class="brand-title-group">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18" />
+              <path d="M19 9l-5 5-4-4-3 3" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">PA & PG <span class="gradient-text">LAB</span></h1>
+            <p class="brand-subtitle">Laboratório Interativo de Análise Matemática & Algorítmica</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Alternar Tema -->
+        <button id="themeToggleBtn" class="btn-icon" title="Alternar Modo Claro / Escuro" aria-label="Alternar Tema">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+
+        <!-- Botão Abrir Guia do Projeto -->
+        <button id="openInfoModalBtn" class="btn-ghost" title="Ver Brainstorm de Design e Reflexão">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <span>Sobre o Projeto</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- BARRA DE SELEÇÃO PRINCIPAL: PA vs PG -->
+    <section class="type-selector-section">
+      <div class="segmented-control" role="tablist" aria-label="Escolha o tipo de progressão">
+        <button id="typePaBtn" class="segment-btn active" role="tab" aria-selected="true" data-type="pa">
+          <span class="segment-icon">Σ</span>
+          <span class="segment-content">
+            <span class="segment-label">Progressão Aritmética</span>
+            <span class="segment-sub">Crescimento por soma constante (Razão r)</span>
+          </span>
+          <span class="segment-badge">PA</span>
+        </button>
+        <button id="typePgBtn" class="segment-btn" role="tab" aria-selected="false" data-type="pg">
+          <span class="segment-icon">Π</span>
+          <span class="segment-content">
+            <span class="segment-label">Progressão Geométrica</span>
+            <span class="segment-sub">Crescimento por fator multiplicativo (Razão q)</span>
+          </span>
+          <span class="segment-badge">PG</span>
+        </button>
+      </div>
+
+      <!-- Card da Fórmula Teórica em Tempo Real -->
+      <div class="formula-banner">
+        <div class="formula-item">
+          <span class="formula-tag">Termo Geral:</span>
+          <code id="formulaTermoGeral" class="formula-code">aₙ = a₁ + (n - 1) · r</code>
+        </div>
+        <div class="formula-divider"></div>
+        <div class="formula-item">
+          <span class="formula-tag">Soma dos Termos:</span>
+          <code id="formulaSoma" class="formula-code">Sₙ = (a₁ + aₙ) · n / 2</code>
+        </div>
+        <div class="formula-divider"></div>
+        <div class="formula-item">
+          <span class="formula-tag">Algoritmo (Etapa 3):</span>
+          <span class="formula-desc">Iteração termo a termo com acumulador</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRESETS RÁPIDOS DA ETAPA 4 (TESTES) -->
+    <section class="presets-section">
+      <div class="presets-header">
+        <span class="presets-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Presets de Teste (Etapa 4):
+        </span>
+        <span class="presets-hint">Carregue rapidamente os cenários de teste exigidos na apostila:</span>
+      </div>
+      <div class="presets-grid">
+        <button class="preset-pill" data-preset="pa-crescente">
+          <span class="pill-dot dot-pa"></span>
+          <span>PA Crescente (a₁=5, r=3, n=6)</span>
+        </button>
+        <button class="preset-pill" data-preset="pa-decrescente">
+          <span class="pill-dot dot-pa"></span>
+          <span>PA Decrescente (a₁=20, r=-3, n=6)</span>
+        </button>
+        <button class="preset-pill" data-preset="pg-crescente">
+          <span class="pill-dot dot-pg"></span>
+          <span>PG Crescente (a₁=2, q=3, n=5)</span>
+        </button>
+        <button class="preset-pill" data-preset="pg-decrescente">
+          <span class="pill-dot dot-pg"></span>
+          <span>PG Decrescente (a₁=64, q=0.5, n=6)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LAYOUT PRINCIPAL: ENTRADAS & RESULTADOS -->
+    <main class="dashboard-grid">
+      <!-- COLUNA DA ESQUERDA: ENTRADAS E CONFIGURAÇÕES -->
+      <section class="card input-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-badge">ETAPA 2 & 6</span>
+            <h2 class="card-title">Parâmetros da Progressão</h2>
+          </div>
+          <button id="resetFormBtn" class="btn-text-subtle" title="Redefinir valores padrão">Limpar</button>
+        </div>
+
+        <form id="progressionForm" class="form-body" onsubmit="return false;">
+          <!-- Seletor de Modo: Quantidade de Termos vs Alcançar Meta -->
+          <div class="mode-switch-wrapper">
+            <label class="field-label">Modo de Operação:</label>
+            <div class="mode-tabs">
+              <button type="button" id="modeStandardBtn" class="mode-tab active" data-mode="standard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                <span>Por Quantidade (n)</span>
+              </button>
+              <button type="button" id="modeGoalBtn" class="mode-tab" data-mode="goal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 6 4 6h-8z"/></svg>
+                <span>Alcançar Meta (Etapa 6)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Campo 1: Primeiro Termo (a1) -->
+          <div class="form-group">
+            <div class="label-row">
+              <label for="inputA1" class="field-label">
+                <span class="symbol">a₁</span> Primeiro Termo
+              </label>
+              <span class="field-hint">Termo inicial da sequência</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputA1" class="form-input" value="5" step="any" required>
+              <div class="input-stepper">
+                <button type="button" class="stepper-btn" data-step-target="inputA1" data-step="1">+</button>
+                <button type="button" class="stepper-btn" data-step-target="inputA1" data-step="-1">−</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo 2: Razão (r ou q) -->
+          <div class="form-group">
+            <div class="label-row">
+              <label for="inputRatio" class="field-label">
+                <span id="ratioSymbol" class="symbol">r</span> 
+                <span id="ratioLabelText">Razão da PA (r)</span>
+              </label>
+              <span id="ratioHint" class="field-hint">Valor somado a cada passo</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputRatio" class="form-input" value="3" step="any" required>
+              <div class="input-stepper">
+                <button type="button" class="stepper-btn" data-step-target="inputRatio" data-step="1">+</button>
+                <button type="button" class="stepper-btn" data-step-target="inputRatio" data-step="-1">−</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo 3: Quantidade de Termos (n) - Visível no modo standard -->
+          <div id="termsCountGroup" class="form-group">
+            <div class="label-row">
+              <label for="inputN" class="field-label">
+                <span class="symbol">n</span> Quantidade de Termos
+              </label>
+              <span id="termsBadge" class="terms-counter-badge">6 termos</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputN" class="form-input" value="6" min="1" max="1000" step="1" required>
+            </div>
+            <div class="slider-wrapper">
+              <input type="range" id="sliderN" class="range-slider" min="1" max="50" value="6">
+              <div class="range-ticks">
+                <span>1</span>
+                <span>10</span>
+                <span>25</span>
+                <span>50</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo 4: Meta da Soma - Visível no modo goal (Etapa 6) -->
+          <div id="goalGroup" class="form-group hidden">
+            <div class="label-row">
+              <label for="inputGoal" class="field-label">
+                <span class="symbol">🎯</span> Meta da Soma
+              </label>
+              <span class="field-hint">Descobre quantos termos ultrapassam essa meta</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputGoal" class="form-input" value="1000" step="any">
+            </div>
+            <p class="field-note">
+              O algoritmo itera acumulando a soma até atingir ou superar a meta informada (ex: exemplo da apostila: a₁=2, q=2, Meta=1000 ➔ 9 termos, soma 1022).
+            </p>
+          </div>
+
+          <!-- Botão Principal de Execução -->
+          <button type="button" id="calculateBtn" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Gerar Sequência & Calcular</span>
+          </button>
+        </form>
+
+        <!-- Informação do Algoritmo Termo a Termo -->
+        <div class="card-footer-info">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <strong>Regra da Etapa 3 Atendida:</strong>
+            <p>Construção iterativa termo a termo com estrutura <code>for</code> e cálculo simultâneo da soma acumulada.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUNA DA DIREITA: RESULTADOS PRINCIPAIS & GRÁFICO -->
+      <section class="results-column">
+        <!-- BENTO GRID DE CARDS RESUMO -->
+        <div class="bento-summary-grid">
+          <!-- Card 1: Último Termo (Destaque Principal) -->
+          <div class="stat-card highlight-card">
+            <div class="stat-card-header">
+              <span class="stat-label">Último Termo</span>
+              <span id="lastTermIndexBadge" class="stat-badge">a₆</span>
+            </div>
+            <div class="stat-value-container">
+              <div id="statLastTerm" class="stat-value">20</div>
+            </div>
+            <div class="stat-card-footer">
+              <span id="lastTermFormulaTip">Valor no último passo calculado</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Soma dos Termos (Destaque Principal) -->
+          <div class="stat-card highlight-card highlight-sum">
+            <div class="stat-card-header">
+              <span class="stat-label">Soma dos Termos</span>
+              <span id="sumIndexBadge" class="stat-badge">S₆</span>
+            </div>
+            <div class="stat-value-container">
+              <div id="statSum" class="stat-value">75</div>
+            </div>
+            <div class="stat-card-footer">
+              <span id="sumMethodTip">Soma acumulada iterativa (Etapa 3)</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Classificação do Comportamento -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-label">Comportamento</span>
+              <span id="behaviorIcon" class="behavior-indicator">↗</span>
+            </div>
+            <div id="statClassification" class="stat-value-secondary">Crescente</div>
+            <div class="stat-card-footer">
+              <span id="statRatioExplanation">Razão r > 0</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Quantidade Efetiva / Meta -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span id="countCardLabel" class="stat-label">Total de Termos</span>
+              <span class="stat-badge">n</span>
+            </div>
+            <div id="statTermsCount" class="stat-value-secondary">6</div>
+            <div class="stat-card-footer">
+              <span id="statGoalDifference">Meta alcançada no termo 9</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD DA SEQUÊNCIA GERADA -->
+        <article class="card sequence-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-badge">SAÍDA DA ETAPA 2 & 7</span>
+              <h3 class="card-title">Sequência Gerada</h3>
+            </div>
+            <div class="card-header-actions">
+              <button id="copySequenceBtn" class="btn-ghost-sm" title="Copiar termos para a área de transferência">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Copiar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Faixa de Exibição Formatada Estilo Apostila -->
+          <div class="plain-format-box">
+            <div class="format-label">Texto da Saída (Padrão Apostila):</div>
+            <div id="plainSequenceText" class="format-code">5, 8, 11, 14, 17, 20</div>
+          </div>
+
+          <!-- Visualização em Chips Interativos com Posição -->
+          <div class="sequence-chips-container">
+            <div class="chips-header">
+              <span>Termos individuais (passe o cursor para detalhes):</span>
+              <span id="chipsSummaryInfo">6 itens</span>
+            </div>
+            <div id="sequenceChipsList" class="sequence-chips-grid">
+              <!-- Renderizado via JavaScript -->
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD DE VISUALIZAÇÃO GRÁFICA (CANVAS NATIVO) -->
+        <article class="card chart-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-badge">ANÁLISE VISUAL</span>
+              <h3 class="card-title">Curva de Evolução dos Termos</h3>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-color-line"></span> Termo (aₖ)</span>
+              <span class="legend-item"><span class="legend-color-sum"></span> Soma (Sₖ)</span>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="progressionCanvas" width="700" height="240"></canvas>
+            <div id="chartTooltip" class="chart-tooltip hidden"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- SEÇÃO INFERIOR: MEMÓRIA DE CÁLCULO ITERATIVA (ETAPA 3) & REFLEXÃO -->
+    <section class="detailed-analysis-section">
+      <div class="card table-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-badge">ETAPA 3 • DEMONSTRAÇÃO ALGORÍTMICA</span>
+            <h3 class="card-title">Memória de Cálculo Termo a Termo</h3>
+          </div>
+          <button id="toggleTableBtn" class="btn-ghost-sm">Ocultar/Expandir Detalhes</button>
+        </div>
+        <p class="section-explanation">
+          Em conformidade com a <strong>Etapa 3</strong>, o código executa um laço de repetição <code>for</code> que calcula cada termo a partir do anterior e acumula a soma passo a passo.
+        </p>
+        <div id="tableWrapper" class="table-responsive">
+          <table class="calc-table">
+            <thead>
+              <tr>
+                <th>Índice (k)</th>
+                <th>Operação Executada</th>
+                <th>Termo Gerado (aₖ)</th>
+                <th>Soma Acumulada (Sₖ)</th>
+                <th>% do Total</th>
+              </tr>
+            </thead>
+            <tbody id="calculationTableBody">
+              <!-- Preenchido via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p><strong>Projeto 1 – Explorando PA e PG</strong> • Disciplina de Pensamento Computacional & Algoritmos</p>
+        <p>Desenvolvido com <strong>HTML5, CSS3 Puro e JavaScript Moderno</strong> para atender aos requisitos de avaliação e Etapa 7 (Frontend).</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL DE GUIA TEÓRICO, CRITÉRIOS E ETAPA 5 -->
+  <div id="infoModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge">DOCUMENTAÇÃO DO PROJETO</span>
+          <h2 class="modal-title">Sobre o Projeto • Brainstorm & Teoria</h2>
+        </div>
+        <button id="closeInfoModalBtn" class="btn-close" aria-label="Fechar Modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Abas do Modal -->
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" data-modal-tab="tab-brainstorm">Brainstorm de Design</button>
+          <button class="modal-tab-btn" data-modal-tab="tab-reflexao">Respostas da Etapa 5</button>
+        </div>
+
+        <!-- Conteúdo 1: Brainstorm de Design -->
+        <div id="tab-brainstorm" class="modal-tab-content active">
+          <h3>Brainstorming de Design para o Desafio Extra (Etapa 7)</h3>
+          <p>Para criar uma experiência surpreendente (WOW factor) que una rigor matemático e excelência de interface, avaliamos 4 direções estéticas:</p>
+          
+          <div class="brainstorm-cards">
+            <div class="brainstorm-card selected">
+              <div class="badge-tag">DIREÇÃO ADOTADA</div>
+              <h4>1. Scientific Glassmorphism & Math Tech Lab</h4>
+              <p>Interface escura com cartões foscos translúcidos (backdrop-blur), destaques em ciano e violeta elétrico e tipografia matemática precisa (JetBrains Mono). Evoca um laboratório científico avançado.</p>
+              <ul>
+                <li><strong>Pontos Fortes:</strong> Sofisticação imediata, facilidade de leitura noturna, contraste ideal para gráficos.</li>
+                <li><strong>Adequação:</strong> 100% alinhado ao conceito "PA & PG LAB".</li>
+              </ul>
+            </div>
+
+            <div class="brainstorm-card">
+              <h4>2. Academic Neo-Brutalism</h4>
+              <p>Contornos pretos marcantes, sombras duras e cores pastel vibrantes (estilo Figma/Notion interativo).</p>
+              <ul>
+                <li><strong>Pontos Fortes:</strong> Lúdico e didático para salas de aula infantis.</li>
+                <li><strong>Desvantagem:</strong> Cansa a visão em sequências com dezenas de termos.</li>
+              </ul>
+            </div>
+
+            <div class="brainstorm-card">
+              <h4>3. Clean Bento Grid (Apple Dashboard)</h4>
+              <p>Módulos retangulares com cantos arredondados suaves, visual limpo e minimalista.</p>
+              <ul>
+                <li><strong>Incorporação:</strong> O layout deste projeto adota a arquitetura de Bento Grid integrada ao Glassmorphism!</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo 2: Respostas da Etapa 5 -->
+        <div id="tab-reflexao" class="modal-tab-content">
+          <h3>Respostas às Questões da Etapa 5 (Reflexão)</h3>
+          
+          <div class="qa-item">
+            <h4>1. Qual foi a principal diferença entre o algoritmo utilizado para gerar uma PA e o utilizado para gerar uma PG?</h4>
+            <p><strong>Resposta:</strong> A operação aritmética fundamental aplicada ao termo anterior. Na <strong>PA</strong>, somamos uma razão fixa a cada iteração (<code>termo = termo + razao</code>), gerando crescimento linear. Na <strong>PG</strong>, multiplicamos o termo anterior por uma razão ou fator constante (<code>termo = termo * razao</code>), gerando crescimento exponencial.</p>
+          </div>
+
+          <div class="qa-item">
+            <h4>2. Qual foi a função da estrutura de repetição no seu programa?</h4>
+            <p><strong>Resposta:</strong> A estrutura de repetição (<code>for</code> ou <code>while</code>) permite construir a sequência iterativamente passo a passo (Etapa 3), gerando cada termo com base na relação de recorrência matemática e acumulando dinamicamente o valor da soma total a cada iteração, sem depender exclusivamente de fórmulas estáticas prontas.</p>
+          </div>
+
+          <div class="qa-item">
+            <h4>3. Qual foi a maior dificuldade encontrada durante a programação?</h4>
+            <p><strong>Resposta:</strong> O tratamento de casos limites (edge cases), como razão zero, razões negativas (que geram sequências alternadas na PG) e a garantia de que o contador de termos na Etapa 6 (alcançar a meta) pare exatamente quando a soma for estritamente superior ao valor da meta.</p>
+          </div>
+
+          <div class="qa-item">
+            <h4>4. Como você resolveu essa dificuldade?</h4>
+            <p><strong>Resposta:</strong> Utilizando validações prévias das entradas de dados, estruturas condicionais bem delimitadas para identificar o tipo de progressão (crescente, decrescente, constante, oscilante) e testes automatizados baseados nos 4 casos da Etapa 4.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="closeInfoModalFooterBtn" class="btn-primary-sm">Fechar Guia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICAÇÃO TOAST PARA COPIAR / FEEDBACK -->
+  <div id="toastNotification" class="toast hidden">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMessage">Texto copiado!</span>
+  </div>
+
+  <script>
+/**
+ * PA & PG LAB - Laboratório Interativo de Progressões
+ * Implementação em JavaScript Moderno (ES6+)
+ * 
+ * Regra da Etapa 3: A sequência é construída termo a termo através de um
+ * loop iterativo com cálculo simultâneo da soma acumulada.
+ */
+
+// Estado Global da Aplicação
+const state = {
+  type: 'pa',              // 'pa' | 'pg'
+  mode: 'standard',        // 'standard' (por n) | 'goal' (alcançar meta)
+  a1: 5,                   // Primeiro termo
+  ratio: 3,                // Razão (r para PA, q para PG)
+  n: 6,                    // Quantidade de termos
+  goal: 1000,              // Meta de soma (Etapa 6)
+  theme: 'theme-dark',     // 'theme-dark' | 'theme-light'
+  
+  // Resultados da última computação
+  results: {
+    terms: [],             // Array de números [a1, a2, ..., an]
+    cumulativeSums: [],    // Array de somas acumuladas [S1, S2, ..., Sn]
+    lastTerm: 0,           // an
+    totalSum: 0,           // Sn
+    classification: '',    // 'Crescente', 'Decrescente', 'Constante', 'Oscilante'
+    termsNeeded: 0,        // Para o modo meta
+    targetReached: false   // Se a meta foi atingida
+  }
+};
+
+// Elementos do DOM
+const elements = {
+  body: document.body,
+  typePaBtn: document.getElementById('typePaBtn'),
+  typePgBtn: document.getElementById('typePgBtn'),
+  formulaTermoGeral: document.getElementById('formulaTermoGeral'),
+  formulaSoma: document.getElementById('formulaSoma'),
+  
+  modeStandardBtn: document.getElementById('modeStandardBtn'),
+  modeGoalBtn: document.getElementById('modeGoalBtn'),
+  termsCountGroup: document.getElementById('termsCountGroup'),
+  goalGroup: document.getElementById('goalGroup'),
+  
+  inputA1: document.getElementById('inputA1'),
+  inputRatio: document.getElementById('inputRatio'),
+  ratioSymbol: document.getElementById('ratioSymbol'),
+  ratioLabelText: document.getElementById('ratioLabelText'),
+  ratioHint: document.getElementById('ratioHint'),
+  inputN: document.getElementById('inputN'),
+  sliderN: document.getElementById('sliderN'),
+  termsBadge: document.getElementById('termsBadge'),
+  inputGoal: document.getElementById('inputGoal'),
+  calculateBtn: document.getElementById('calculateBtn'),
+  resetFormBtn: document.getElementById('resetFormBtn'),
+  
+  // Bento Cards
+  statLastTerm: document.getElementById('statLastTerm'),
+  lastTermIndexBadge: document.getElementById('lastTermIndexBadge'),
+  lastTermFormulaTip: document.getElementById('lastTermFormulaTip'),
+  statSum: document.getElementById('statSum'),
+  sumIndexBadge: document.getElementById('sumIndexBadge'),
+  statClassification: document.getElementById('statClassification'),
+  behaviorIcon: document.getElementById('behaviorIcon'),
+  statRatioExplanation: document.getElementById('statRatioExplanation'),
+  countCardLabel: document.getElementById('countCardLabel'),
+  statTermsCount: document.getElementById('statTermsCount'),
+  statGoalDifference: document.getElementById('statGoalDifference'),
+  
+  // Sequência e chips
+  plainSequenceText: document.getElementById('plainSequenceText'),
+  sequenceChipsList: document.getElementById('sequenceChipsList'),
+  chipsSummaryInfo: document.getElementById('chipsSummaryInfo'),
+  copySequenceBtn: document.getElementById('copySequenceBtn'),
+  
+  // Canvas de Análise
+  progressionCanvas: document.getElementById('progressionCanvas'),
+  chartTooltip: document.getElementById('chartTooltip'),
+  
+  // Tabela
+  calculationTableBody: document.getElementById('calculationTableBody'),
+  toggleTableBtn: document.getElementById('toggleTableBtn'),
+  tableWrapper: document.getElementById('tableWrapper'),
+  
+  // Tema & Modal
+  themeToggleBtn: document.getElementById('themeToggleBtn'),
+  openInfoModalBtn: document.getElementById('openInfoModalBtn'),
+  closeInfoModalBtn: document.getElementById('closeInfoModalBtn'),
+  closeInfoModalFooterBtn: document.getElementById('closeInfoModalFooterBtn'),
+  infoModal: document.getElementById('infoModal'),
+  modalTabBtns: document.querySelectorAll('.modal-tab-btn'),
+  modalTabContents: document.querySelectorAll('.modal-tab-content'),
+  
+  // Toast
+  toastNotification: document.getElementById('toastNotification'),
+  toastMessage: document.getElementById('toastMessage')
+};
+
+// ==========================================================================
+// 1. INICIALIZAÇÃO E EVENT LISTENERS
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  setupEventListeners();
+  setupPresets();
+  calculateProgression(); // Executa o cálculo inicial (Exemplo 1 da apostila)
+});
+
+function setupEventListeners() {
+  // Alternância de Tipo (PA vs PG)
+  elements.typePaBtn.addEventListener('click', () => switchProgressionType('pa'));
+  elements.typePgBtn.addEventListener('click', () => switchProgressionType('pg'));
+
+  // Alternância de Modo (Padrão vs Meta)
+  elements.modeStandardBtn.addEventListener('click', () => switchMode('standard'));
+  elements.modeGoalBtn.addEventListener('click', () => switchMode('goal'));
+
+  // Sincronização Input N e Slider
+  elements.inputN.addEventListener('input', (e) => {
+    const val = parseInt(e.target.value) || 1;
+    elements.sliderN.value = Math.min(val, 50);
+    elements.termsBadge.textContent = `${val} termo${val > 1 ? 's' : ''}`;
+  });
+
+  elements.sliderN.addEventListener('input', (e) => {
+    elements.inputN.value = e.target.value;
+    elements.termsBadge.textContent = `${e.target.value} termos`;
+    calculateProgression();
+  });
+
+  // Botões de incremento rápido (+/-)
+  document.querySelectorAll('.stepper-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetInput = document.getElementById(btn.dataset.stepTarget);
+      const step = parseFloat(btn.dataset.step);
+      let currentVal = parseFloat(targetInput.value) || 0;
+      targetInput.value = (currentVal + step).toFixed(2).replace(/\.00$/, '');
+      calculateProgression();
+    });
+  });
+
+  // Botão de Calcular Principal
+  elements.calculateBtn.addEventListener('click', calculateProgression);
+
+  // Recalcular com Enter em qualquer campo
+  [elements.inputA1, elements.inputRatio, elements.inputN, elements.inputGoal].forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculateProgression();
+      }
+    });
+  });
+
+  // Botão Limpar / Reset
+  elements.resetFormBtn.addEventListener('click', resetDefaults);
+
+  // Botão Copiar Sequência
+  elements.copySequenceBtn.addEventListener('click', copySequenceToClipboard);
+
+  // Alternar visualização da tabela detalhada
+  elements.toggleTableBtn.addEventListener('click', () => {
+    elements.tableWrapper.classList.toggle('collapsed');
+    elements.toggleTableBtn.textContent = elements.tableWrapper.classList.contains('collapsed')
+      ? 'Expandir Detalhes'
+      : 'Ocultar Detalhes';
+  });
+
+  // Alternar Tema
+  elements.themeToggleBtn.addEventListener('click', toggleTheme);
+
+  // Modal de Informações e Critérios
+  elements.openInfoModalBtn.addEventListener('click', () => elements.infoModal.classList.remove('hidden'));
+  elements.closeInfoModalBtn.addEventListener('click', () => elements.infoModal.classList.add('hidden'));
+  elements.closeInfoModalFooterBtn.addEventListener('click', () => elements.infoModal.classList.add('hidden'));
+  elements.infoModal.addEventListener('click', (e) => {
+    if (e.target === elements.infoModal) elements.infoModal.classList.add('hidden');
+  });
+
+  // Abas do Modal
+  elements.modalTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      elements.modalTabBtns.forEach(b => b.classList.remove('active'));
+      elements.modalTabContents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.modalTab).classList.add('active');
+    });
+  });
+
+  // Redimensionamento de Canvas
+  window.addEventListener('resize', debounce(renderChart, 150));
+}
+
+// ==========================================================================
+// 2. CONFIGURAÇÃO DE PRESETS DA ETAPA 4 (TESTES)
+// ==========================================================================
+function setupPresets() {
+  const presets = {
+    'pa-crescente': { type: 'pa', a1: 5, ratio: 3, n: 6 },
+    'pa-decrescente': { type: 'pa', a1: 20, ratio: -3, n: 6 },
+    'pg-crescente': { type: 'pg', a1: 2, ratio: 3, n: 5 },
+    'pg-decrescente': { type: 'pg', a1: 64, ratio: 0.5, n: 6 }
+  };
+
+  document.querySelectorAll('.preset-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const presetKey = pill.dataset.preset;
+      const data = presets[presetKey];
+      if (!data) return;
+
+      switchProgressionType(data.type);
+      elements.inputA1.value = data.a1;
+      elements.inputRatio.value = data.ratio;
+      elements.inputN.value = data.n;
+      elements.sliderN.value = data.n;
+      elements.termsBadge.textContent = `${data.n} termos`;
+      switchMode('standard');
+      calculateProgression();
+
+      showToast(`Preset carregado: ${pill.textContent.trim()}`);
+    });
+  });
+}
+
+// ==========================================================================
+// 3. ALTERNÂNCIA DE TIPO (PA vs PG) E MODO
+// ==========================================================================
+function switchProgressionType(type) {
+  state.type = type;
+  elements.body.setAttribute('data-progression', type);
+
+  if (type === 'pa') {
+    elements.typePaBtn.classList.add('active');
+    elements.typePaBtn.setAttribute('aria-selected', 'true');
+    elements.typePgBtn.classList.remove('active');
+    elements.typePgBtn.setAttribute('aria-selected', 'false');
+
+    elements.formulaTermoGeral.textContent = 'aₙ = a₁ + (n - 1) · r';
+    elements.formulaSoma.textContent = 'Sₙ = (a₁ + aₙ) · n / 2';
+
+    elements.ratioSymbol.textContent = 'r';
+    elements.ratioLabelText.textContent = 'Razão da PA (r)';
+    elements.ratioHint.textContent = 'Valor somado a cada passo';
+  } else {
+    elements.typePgBtn.classList.add('active');
+    elements.typePgBtn.setAttribute('aria-selected', 'true');
+    elements.typePaBtn.classList.remove('active');
+    elements.typePaBtn.setAttribute('aria-selected', 'false');
+
+    elements.formulaTermoGeral.textContent = 'aₙ = a₁ · qⁿ⁻¹';
+    elements.formulaSoma.textContent = 'Sₙ = a₁ · (qⁿ - 1) / (q - 1)';
+
+    elements.ratioSymbol.textContent = 'q';
+    elements.ratioLabelText.textContent = 'Razão da PG (q)';
+    elements.ratioHint.textContent = 'Fator multiplicado a cada passo';
+  }
+
+  calculateProgression();
+}
+
+function switchMode(mode) {
+  state.mode = mode;
+  if (mode === 'standard') {
+    elements.modeStandardBtn.classList.add('active');
+    elements.modeGoalBtn.classList.remove('active');
+    elements.termsCountGroup.classList.remove('hidden');
+    elements.goalGroup.classList.add('hidden');
+    elements.countCardLabel.textContent = 'Total de Termos';
+  } else {
+    elements.modeGoalBtn.classList.add('active');
+    elements.modeStandardBtn.classList.remove('active');
+    elements.termsCountGroup.classList.add('hidden');
+    elements.goalGroup.classList.remove('hidden');
+    elements.countCardLabel.textContent = 'Termos p/ Superar Meta';
+  }
+  calculateProgression();
+}
+
+// ==========================================================================
+// 4. ALGORITMO TERMO A TERMO (REGRA DA ETAPA 3 & ETAPA 6)
+// ==========================================================================
+function calculateProgression() {
+  const a1 = parseFloat(elements.inputA1.value);
+  const ratio = parseFloat(elements.inputRatio.value);
+
+  if (isNaN(a1) || isNaN(ratio)) {
+    showToast('Por favor, informe valores numéricos válidos!');
+    return;
+  }
+
+  state.a1 = a1;
+  state.ratio = ratio;
+
+  const isPA = state.type === 'pa';
+  const terms = [];
+  const cumulativeSums = [];
+
+  // MODO 1: QUANTIDADE DE TERMOS (n)
+  if (state.mode === 'standard') {
+    let n = parseInt(elements.inputN.value);
+    if (isNaN(n) || n < 1) n = 1;
+    if (n > 1000) n = 1000;
+    state.n = n;
+
+    let currentTerm = a1;
+    let accumulatedSum = 0;
+
+    /**
+     * REGRA ESTRITA DA ETAPA 3:
+     * A sequência é construída termo a termo utilizando for,
+     * calculando simultaneamente a soma acumulada passo a passo.
+     */
+    for (let k = 1; k <= n; k++) {
+      if (k === 1) {
+        currentTerm = a1;
+      } else {
+        if (isPA) {
+          currentTerm = currentTerm + ratio;
+        } else {
+          currentTerm = currentTerm * ratio;
+        }
+      }
+
+      // Arredondamento para evitar dízimas de ponto flutuante do JS
+      currentTerm = roundNumber(currentTerm, 6);
+      accumulatedSum = roundNumber(accumulatedSum + currentTerm, 6);
+
+      terms.push(currentTerm);
+      cumulativeSums.push(accumulatedSum);
+    }
+
+    state.results.terms = terms;
+    state.results.cumulativeSums = cumulativeSums;
+    state.results.lastTerm = terms[terms.length - 1];
+    state.results.totalSum = accumulatedSum;
+    state.results.termsNeeded = n;
+    state.results.targetReached = true;
+  }
+  // MODO 2: ALCANÇANDO A META (ETAPA 6)
+  else {
+    const goal = parseFloat(elements.inputGoal.value);
+    if (isNaN(goal)) {
+      showToast('Informe um valor de meta válido!');
+      return;
+    }
+    state.goal = goal;
+
+    let currentTerm = a1;
+    let accumulatedSum = 0;
+    let count = 0;
+    const MAX_ITERATIONS = 500; // Trava de segurança para evitar loops infinitos
+
+    /**
+     * ETAPA 6: O próprio programa descobre quando a soma ultrapassará a meta.
+     * Itera até que accumulatedSum > goal
+     */
+    while (accumulatedSum <= goal && count < MAX_ITERATIONS) {
+      count++;
+      if (count === 1) {
+        currentTerm = a1;
+      } else {
+        if (isPA) {
+          currentTerm = currentTerm + ratio;
+        } else {
+          currentTerm = currentTerm * ratio;
+        }
+      }
+
+      currentTerm = roundNumber(currentTerm, 6);
+      accumulatedSum = roundNumber(accumulatedSum + currentTerm, 6);
+
+      terms.push(currentTerm);
+      cumulativeSums.push(accumulatedSum);
+
+      // Verificação para casos impossíveis (ex: razão 0 com soma que não cresce)
+      if (count > 2 && Math.abs(currentTerm) === 0 && accumulatedSum <= goal) {
+        break;
+      }
+    }
+
+    state.results.terms = terms;
+    state.results.cumulativeSums = cumulativeSums;
+    state.results.lastTerm = terms[terms.length - 1];
+    state.results.totalSum = accumulatedSum;
+    state.results.termsNeeded = count;
+    state.results.targetReached = accumulatedSum > goal;
+    state.n = count;
+  }
+
+  // Classificação do Comportamento
+  state.results.classification = classifyProgression(isPA, a1, ratio);
+
+  // Renderizar Todos os Componentes
+  renderSummaryCards();
+  renderSequenceOutput();
+  renderCalculationTable();
+  renderChart();
+}
+
+// ==========================================================================
+// 5. CLASSIFICAÇÃO MATEMÁTICA DA PROGRESSÃO
+// ==========================================================================
+function classifyProgression(isPA, a1, ratio) {
+  if (isPA) {
+    if (ratio > 0) return { label: 'Crescente', icon: '↗', desc: 'Razão r > 0' };
+    if (ratio < 0) return { label: 'Decrescente', icon: '↘', desc: 'Razão r < 0' };
+    return { label: 'Constante', icon: '→', desc: 'Razão r = 0' };
+  } else {
+    if (ratio === 1) return { label: 'Constante', icon: '→', desc: 'Razão q = 1' };
+    if (ratio === 0) return { label: 'Nula', icon: '∅', desc: 'Razão q = 0' };
+    if (ratio < 0) return { label: 'Oscilante / Alternada', icon: '∿', desc: 'Razão q < 0' };
+    if (a1 > 0 && ratio > 1) return { label: 'Crescente', icon: '↗', desc: 'a₁ > 0 e q > 1' };
+    if (a1 > 0 && ratio > 0 && ratio < 1) return { label: 'Decrescente', icon: '↘', desc: 'a₁ > 0 e 0 < q < 1' };
+    if (a1 < 0 && ratio > 1) return { label: 'Decrescente', icon: '↘', desc: 'a₁ < 0 e q > 1' };
+    if (a1 < 0 && ratio > 0 && ratio < 1) return { label: 'Crescente', icon: '↗', desc: 'a₁ < 0 e 0 < q < 1' };
+    return { label: 'Geométrica', icon: '↗', desc: `q = ${ratio}` };
+  }
+}
+
+// ==========================================================================
+// 6. RENDERIZAÇÃO DOS CARDS BENTO DE RESULTADOS
+// ==========================================================================
+function renderSummaryCards() {
+  const { results, n, mode, goal } = state;
+
+  // 1. Último Termo (aₙ)
+  elements.statLastTerm.textContent = formatDisplayNumber(results.lastTerm);
+  elements.lastTermIndexBadge.textContent = `a${subscript(n)}`;
+  elements.lastTermFormulaTip.textContent = state.type === 'pa' 
+    ? `Calculado via iteração (a₁ + ${(n - 1)} · r)` 
+    : `Calculado via iteração (a₁ · q${superscript(n - 1)})`;
+
+  // 2. Soma dos Termos (Sₙ)
+  elements.statSum.textContent = formatDisplayNumber(results.totalSum);
+  elements.sumIndexBadge.textContent = `S${subscript(n)}`;
+
+  // 3. Classificação
+  elements.statClassification.textContent = results.classification.label;
+  elements.behaviorIcon.textContent = results.classification.icon;
+  elements.statRatioExplanation.textContent = results.classification.desc;
+
+  // 4. Quantidade / Meta
+  elements.statTermsCount.textContent = results.termsNeeded;
+  if (mode === 'standard') {
+    elements.statGoalDifference.textContent = `${n} termos gerados pelo laço`;
+  } else {
+    if (results.targetReached) {
+      elements.statGoalDifference.textContent = `Soma (${formatDisplayNumber(results.totalSum)}) superou meta (${formatDisplayNumber(goal)})`;
+    } else {
+      elements.statGoalDifference.textContent = `Meta não alcançada no limite de iterações`;
+    }
+  }
+}
+
+// ==========================================================================
+// 7. RENDERIZAÇÃO DA SEQUÊNCIA (TEXTO PADRÃO APOSTILA & CHIPS)
+// ==========================================================================
+function renderSequenceOutput() {
+  const { terms } = state.results;
+
+  // Texto formatado idêntico aos Exemplos 1 e 2 da apostila (ex: "5, 8, 11, 14, 17, 20")
+  const formattedString = terms.map(t => formatDisplayNumber(t)).join(', ');
+  elements.plainSequenceText.textContent = formattedString;
+
+  // Renderizar chips individuais interativos
+  elements.chipsSummaryInfo.textContent = `${terms.length} termo${terms.length > 1 ? 's' : ''}`;
+  elements.sequenceChipsList.innerHTML = '';
+
+  const fragment = document.createDocumentFragment();
+  terms.forEach((term, index) => {
+    const isLast = index === terms.length - 1;
+    const chip = document.createElement('div');
+    chip.className = `term-chip ${isLast ? 'is-last' : ''}`;
+    chip.style.animationDelay = `${Math.min(index * 20, 400)}ms`;
+
+    chip.innerHTML = `
+      <span class="chip-index">a${subscript(index + 1)}</span>
+      <span class="chip-value">${formatDisplayNumber(term)}</span>
+    `;
+
+    chip.title = `Termo a${index + 1} = ${term} | Clique para ver na tabela`;
+    chip.addEventListener('click', () => {
+      highlightTableRow(index);
+    });
+
+    fragment.appendChild(chip);
+  });
+
+  elements.sequenceChipsList.appendChild(fragment);
+}
+
+// ==========================================================================
+// 8. RENDERIZAÇÃO DA TABELA DE MEMÓRIA DE CÁLCULO (ETAPA 3)
+// ==========================================================================
+function renderCalculationTable() {
+  const { terms, cumulativeSums, totalSum } = state.results;
+  const isPA = state.type === 'pa';
+  const ratio = state.ratio;
+  const a1 = state.a1;
+
+  elements.calculationTableBody.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+
+  // Se a lista de termos for muito grande, exibe os 100 primeiros para desempenho
+  const maxDisplay = Math.min(terms.length, 100);
+
+  for (let i = 0; i < maxDisplay; i++) {
+    const row = document.createElement('tr');
+    row.id = `table-row-${i}`;
+
+    let operacao = '';
+    if (i === 0) {
+      operacao = `Termo inicial (a₁ = ${a1})`;
+    } else {
+      const prev = formatDisplayNumber(terms[i - 1]);
+      if (isPA) {
+        operacao = `${prev} + (${ratio}) = ${formatDisplayNumber(terms[i])}`;
+      } else {
+        operacao = `${prev} · (${ratio}) = ${formatDisplayNumber(terms[i])}`;
+      }
+    }
+
+    const percent = totalSum !== 0 
+      ? ((cumulativeSums[i] / totalSum) * 100).toFixed(1) + '%' 
+      : '-';
+
+    row.innerHTML = `
+      <td><strong>a${subscript(i + 1)}</strong></td>
+      <td><code>${operacao}</code></td>
+      <td><strong>${formatDisplayNumber(terms[i])}</strong></td>
+      <td>${formatDisplayNumber(cumulativeSums[i])}</td>
+      <td>${percent}</td>
+    `;
+
+    fragment.appendChild(row);
+  }
+
+  elements.calculationTableBody.appendChild(fragment);
+}
+
+function highlightTableRow(index) {
+  if (index >= 100) return;
+  const row = document.getElementById(`table-row-${index}`);
+  if (!row) return;
+
+  // Garante que a tabela está expandida
+  elements.tableWrapper.classList.remove('collapsed');
+  elements.toggleTableBtn.textContent = 'Ocultar Detalhes';
+
+  row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  row.style.background = 'var(--theme-badge-bg)';
+  setTimeout(() => {
+    row.style.background = '';
+  }, 1400);
+}
+
+// ==========================================================================
+// 9. RENDERIZADOR DO GRÁFICO (CANVAS HTML5 NATIVO)
+// ==========================================================================
+function renderChart() {
+  const canvas = elements.progressionCanvas;
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const width = rect.width;
+  const height = rect.height;
+  const terms = state.results.terms;
+
+  ctx.clearRect(0, 0, width, height);
+
+  if (terms.length === 0) return;
+
+  // Margens
+  const padding = { top: 25, right: 30, bottom: 35, left: 55 };
+  const graphWidth = width - padding.left - padding.right;
+  const graphHeight = height - padding.top - padding.bottom;
+
+  // Escala dos eixos
+  const minVal = Math.min(0, ...terms);
+  const maxVal = Math.max(0, ...terms);
+  const range = maxVal - minVal || 1;
+
+  const getX = (index) => {
+    if (terms.length === 1) return padding.left + graphWidth / 2;
+    return padding.left + (index / (terms.length - 1)) * graphWidth;
+  };
+
+  const getY = (val) => {
+    return padding.top + graphHeight - ((val - minVal) / range) * graphHeight;
+  };
+
+  // 1. Grade de fundo e Eixos
+  ctx.strokeStyle = state.theme === 'theme-dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  ctx.lineWidth = 1;
+
+  // Linhas horizontais (4 divisões)
+  const gridLines = 4;
+  for (let i = 0; i <= gridLines; i++) {
+    const yVal = minVal + (range / gridLines) * i;
+    const y = getY(yVal);
+
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(width - padding.right, y);
+    ctx.stroke();
+
+    // Rótulos do eixo Y
+    ctx.fillStyle = state.theme === 'theme-dark' ? '#94a3b8' : '#64748b';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(formatCompact(yVal), padding.left - 8, y);
+  }
+
+  // Linha do zero (se dentro do range)
+  if (minVal < 0 && maxVal > 0) {
+    const zeroY = getY(0);
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padding.left, zeroY);
+    ctx.lineTo(width - padding.right, zeroY);
+    ctx.stroke();
+  }
+
+  // 2. Desenho da Área com Gradiente
+  const isPA = state.type === 'pa';
+  const primaryColor = isPA ? '#06b6d4' : '#8b5cf6';
+  const secondaryColor = isPA ? '#3b82f6' : '#ec4899';
+
+  const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+  gradient.addColorStop(0, isPA ? 'rgba(6, 182, 212, 0.35)' : 'rgba(139, 92, 246, 0.35)');
+  gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+  ctx.beginPath();
+  terms.forEach((val, i) => {
+    const x = getX(i);
+    const y = getY(val);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  const lastX = getX(terms.length - 1);
+  const firstX = getX(0);
+  const baseY = getY(Math.max(0, minVal));
+  ctx.lineTo(lastX, baseY);
+  ctx.lineTo(firstX, baseY);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  // 3. Linha dos Termos (aₖ)
+  ctx.beginPath();
+  terms.forEach((val, i) => {
+    const x = getX(i);
+    const y = getY(val);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  ctx.strokeStyle = primaryColor;
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  // 4. Pontos / Nós da sequência
+  terms.forEach((val, i) => {
+    const x = getX(i);
+    const y = getY(val);
+
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = primaryColor;
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Rótulos do eixo X (índices aₖ)
+    if (terms.length <= 15 || i === 0 || i === terms.length - 1 || i % Math.ceil(terms.length / 10) === 0) {
+      ctx.fillStyle = state.theme === 'theme-dark' ? '#94a3b8' : '#64748b';
+      ctx.font = '10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`a${i + 1}`, x, height - padding.bottom + 8);
+    }
+  });
+}
+
+// ==========================================================================
+// 10. FUNÇÕES AUXILIARES & UTILITÁRIOS
+// ==========================================================================
+function resetDefaults() {
+  elements.inputA1.value = '5';
+  elements.inputRatio.value = '3';
+  elements.inputN.value = '6';
+  elements.sliderN.value = '6';
+  elements.termsBadge.textContent = '6 termos';
+  elements.inputGoal.value = '1000';
+  switchProgressionType('pa');
+  switchMode('standard');
+  calculateProgression();
+  showToast('Valores restaurados para o padrão.');
+}
+
+function copySequenceToClipboard() {
+  const text = elements.plainSequenceText.textContent;
+  if (!text) return;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Sequência copiada para a área de transferência!');
+    }).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textArea);
+  showToast('Sequência copiada!');
+}
+
+function showToast(msg) {
+  elements.toastMessage.textContent = msg;
+  elements.toastNotification.classList.remove('hidden');
+  clearTimeout(elements.toastNotification._timer);
+  elements.toastNotification._timer = setTimeout(() => {
+    elements.toastNotification.classList.add('hidden');
+  }, 2800);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('pa_pg_lab_theme') || 'theme-dark';
+  state.theme = saved;
+  elements.body.className = saved;
+}
+
+function toggleTheme() {
+  state.theme = state.theme === 'theme-dark' ? 'theme-light' : 'theme-dark';
+  elements.body.className = state.theme;
+  localStorage.setItem('pa_pg_lab_theme', state.theme);
+  renderChart();
+}
+
+function roundNumber(num, decimals = 4) {
+  return Number(Math.round(num + 'e' + decimals) + 'e-' + decimals);
+}
+
+function formatDisplayNumber(num) {
+  if (num === undefined || num === null) return '0';
+  if (Math.abs(num) >= 1e12 || (Math.abs(num) < 1e-4 && num !== 0)) {
+    return num.toExponential(4);
+  }
+  return num.toLocaleString('pt-BR', { maximumFractionDigits: 6 });
+}
+
+function formatCompact(num) {
+  if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+  if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + 'k';
+  return roundNumber(num, 1).toString();
+}
+
+function subscript(n) {
+  const subs = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉' };
+  return String(n).split('').map(d => subs[d] || d).join('');
+}
+
+function superscript(n) {
+  const sups = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻' };
+  return String(n).split('').map(d => sups[d] || d).join('');
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+</script>
+</body>
+</html>

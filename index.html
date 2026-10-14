@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PA & PG LAB | Laboratório Interativo de Progressões</title>
+  <meta name="description" content="Laboratório visual e interativo para exploração, cálculo e análise de Progressões Aritméticas (PA) e Geométricas (PG). Desafio Etapa 7.">
+  
+  <!-- Fontes do Google: Outfit (moderna/geométrica) e JetBrains Mono (precisão matemática) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark" data-progression="pa">
+  <!-- Efeitos de iluminação de fundo (Luzes de ambiente) -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <div class="app-container">
+    <!-- CABEÇALHO -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-badge">
+          <span class="badge-dot"></span>
+          <span>PROJETO 1 • ETAPA 7</span>
+        </div>
+        <div class="brand-title-group">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18" />
+              <path d="M19 9l-5 5-4-4-3 3" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">PA & PG <span class="gradient-text">LAB</span></h1>
+            <p class="brand-subtitle">Laboratório Interativo de Análise Matemática & Algorítmica</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Alternar Tema -->
+        <button id="themeToggleBtn" class="btn-icon" title="Alternar Modo Claro / Escuro" aria-label="Alternar Tema">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+
+        <!-- Botão Abrir Guia do Projeto -->
+        <button id="openInfoModalBtn" class="btn-ghost" title="Ver Brainstorm de Design e Reflexão">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <span>Sobre o Projeto</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- BARRA DE SELEÇÃO PRINCIPAL: PA vs PG -->
+    <section class="type-selector-section">
+      <div class="segmented-control" role="tablist" aria-label="Escolha o tipo de progressão">
+        <button id="typePaBtn" class="segment-btn active" role="tab" aria-selected="true" data-type="pa">
+          <span class="segment-icon">Σ</span>
+          <span class="segment-content">
+            <span class="segment-label">Progressão Aritmética</span>
+            <span class="segment-sub">Crescimento por soma constante (Razão r)</span>
+          </span>
+          <span class="segment-badge">PA</span>
+        </button>
+        <button id="typePgBtn" class="segment-btn" role="tab" aria-selected="false" data-type="pg">
+          <span class="segment-icon">Π</span>
+          <span class="segment-content">
+            <span class="segment-label">Progressão Geométrica</span>
+            <span class="segment-sub">Crescimento por fator multiplicativo (Razão q)</span>
+          </span>
+          <span class="segment-badge">PG</span>
+        </button>
+      </div>
+
+      <!-- Card da Fórmula Teórica em Tempo Real -->
+      <div class="formula-banner">
+        <div class="formula-item">
+          <span class="formula-tag">Termo Geral:</span>
+          <code id="formulaTermoGeral" class="formula-code">aₙ = a₁ + (n - 1) · r</code>
+        </div>
+        <div class="formula-divider"></div>
+        <div class="formula-item">
+          <span class="formula-tag">Soma dos Termos:</span>
+          <code id="formulaSoma" class="formula-code">Sₙ = (a₁ + aₙ) · n / 2</code>
+        </div>
+        <div class="formula-divider"></div>
+        <div class="formula-item">
+          <span class="formula-tag">Algoritmo (Etapa 3):</span>
+          <span class="formula-desc">Iteração termo a termo com acumulador</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRESETS RÁPIDOS DA ETAPA 4 (TESTES) -->
+    <section class="presets-section">
+      <div class="presets-header">
+        <span class="presets-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Presets de Teste (Etapa 4):
+        </span>
+        <span class="presets-hint">Carregue rapidamente os cenários de teste exigidos na apostila:</span>
+      </div>
+      <div class="presets-grid">
+        <button class="preset-pill" data-preset="pa-crescente">
+          <span class="pill-dot dot-pa"></span>
+          <span>PA Crescente (a₁=5, r=3, n=6)</span>
+        </button>
+        <button class="preset-pill" data-preset="pa-decrescente">
+          <span class="pill-dot dot-pa"></span>
+          <span>PA Decrescente (a₁=20, r=-3, n=6)</span>
+        </button>
+        <button class="preset-pill" data-preset="pg-crescente">
+          <span class="pill-dot dot-pg"></span>
+          <span>PG Crescente (a₁=2, q=3, n=5)</span>
+        </button>
+        <button class="preset-pill" data-preset="pg-decrescente">
+          <span class="pill-dot dot-pg"></span>
+          <span>PG Decrescente (a₁=64, q=0.5, n=6)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LAYOUT PRINCIPAL: ENTRADAS & RESULTADOS -->
+    <main class="dashboard-grid">
+      <!-- COLUNA DA ESQUERDA: ENTRADAS E CONFIGURAÇÕES -->
+      <section class="card input-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-badge">ETAPA 2 & 6</span>
+            <h2 class="card-title">Parâmetros da Progressão</h2>
+          </div>
+          <button id="resetFormBtn" class="btn-text-subtle" title="Redefinir valores padrão">Limpar</button>
+        </div>
+
+        <form id="progressionForm" class="form-body" onsubmit="return false;">
+          <!-- Seletor de Modo: Quantidade de Termos vs Alcançar Meta -->
+          <div class="mode-switch-wrapper">
+            <label class="field-label">Modo de Operação:</label>
+            <div class="mode-tabs">
+              <button type="button" id="modeStandardBtn" class="mode-tab active" data-mode="standard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                <span>Por Quantidade (n)</span>
+              </button>
+              <button type="button" id="modeGoalBtn" class="mode-tab" data-mode="goal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 6 4 6h-8z"/></svg>
+                <span>Alcançar Meta (Etapa 6)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Campo 1: Primeiro Termo (a1) -->
+          <div class="form-group">
+            <div class="label-row">
+              <label for="inputA1" class="field-label">
+                <span class="symbol">a₁</span> Primeiro Termo
+              </label>
+              <span class="field-hint">Termo inicial da sequência</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputA1" class="form-input" value="5" step="any" required>
+              <div class="input-stepper">
+                <button type="button" class="stepper-btn" data-step-target="inputA1" data-step="1">+</button>
+                <button type="button" class="stepper-btn" data-step-target="inputA1" data-step="-1">−</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo 2: Razão (r ou q) -->
+          <div class="form-group">
+            <div class="label-row">
+              <label for="inputRatio" class="field-label">
+                <span id="ratioSymbol" class="symbol">r</span> 
+                <span id="ratioLabelText">Razão da PA (r)</span>
+              </label>
+              <span id="ratioHint" class="field-hint">Valor somado a cada passo</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputRatio" class="form-input" value="3" step="any" required>
+              <div class="input-stepper">
+                <button type="button" class="stepper-btn" data-step-target="inputRatio" data-step="1">+</button>
+                <button type="button" class="stepper-btn" data-step-target="inputRatio" data-step="-1">−</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo 3: Quantidade de Termos (n) - Visível no modo standard -->
+          <div id="termsCountGroup" class="form-group">
+            <div class="label-row">
+              <label for="inputN" class="field-label">
+                <span class="symbol">n</span> Quantidade de Termos
+              </label>
+              <span id="termsBadge" class="terms-counter-badge">6 termos</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputN" class="form-input" value="6" min="1" max="1000" step="1" required>
+            </div>
+            <div class="slider-wrapper">
+              <input type="range" id="sliderN" class="range-slider" min="1" max="50" value="6">
+              <div class="range-ticks">
+                <span>1</span>
+                <span>10</span>
+                <span>25</span>
+                <span>50</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo 4: Meta da Soma - Visível no modo goal (Etapa 6) -->
+          <div id="goalGroup" class="form-group hidden">
+            <div class="label-row">
+              <label for="inputGoal" class="field-label">
+                <span class="symbol">🎯</span> Meta da Soma
+              </label>
+              <span class="field-hint">Descobre quantos termos ultrapassam essa meta</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" id="inputGoal" class="form-input" value="1000" step="any">
+            </div>
+            <p class="field-note">
+              O algoritmo itera acumulando a soma até atingir ou superar a meta informada (ex: exemplo da apostila: a₁=2, q=2, Meta=1000 ➔ 9 termos, soma 1022).
+            </p>
+          </div>
+
+          <!-- Botão Principal de Execução -->
+          <button type="button" id="calculateBtn" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Gerar Sequência & Calcular</span>
+          </button>
+        </form>
+
+        <!-- Informação do Algoritmo Termo a Termo -->
+        <div class="card-footer-info">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <strong>Regra da Etapa 3 Atendida:</strong>
+            <p>Construção iterativa termo a termo com estrutura <code>for</code> e cálculo simultâneo da soma acumulada.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUNA DA DIREITA: RESULTADOS PRINCIPAIS & GRÁFICO -->
+      <section class="results-column">
+        <!-- BENTO GRID DE CARDS RESUMO -->
+        <div class="bento-summary-grid">
+          <!-- Card 1: Último Termo (Destaque Principal) -->
+          <div class="stat-card highlight-card">
+            <div class="stat-card-header">
+              <span class="stat-label">Último Termo</span>
+              <span id="lastTermIndexBadge" class="stat-badge">a₆</span>
+            </div>
+            <div class="stat-value-container">
+              <div id="statLastTerm" class="stat-value">20</div>
+            </div>
+            <div class="stat-card-footer">
+              <span id="lastTermFormulaTip">Valor no último passo calculado</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Soma dos Termos (Destaque Principal) -->
+          <div class="stat-card highlight-card highlight-sum">
+            <div class="stat-card-header">
+              <span class="stat-label">Soma dos Termos</span>
+              <span id="sumIndexBadge" class="stat-badge">S₆</span>
+            </div>
+            <div class="stat-value-container">
+              <div id="statSum" class="stat-value">75</div>
+            </div>
+            <div class="stat-card-footer">
+              <span id="sumMethodTip">Soma acumulada iterativa (Etapa 3)</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Classificação do Comportamento -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-label">Comportamento</span>
+              <span id="behaviorIcon" class="behavior-indicator">↗</span>
+            </div>
+            <div id="statClassification" class="stat-value-secondary">Crescente</div>
+            <div class="stat-card-footer">
+              <span id="statRatioExplanation">Razão r > 0</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Quantidade Efetiva / Meta -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span id="countCardLabel" class="stat-label">Total de Termos</span>
+              <span class="stat-badge">n</span>
+            </div>
+            <div id="statTermsCount" class="stat-value-secondary">6</div>
+            <div class="stat-card-footer">
+              <span id="statGoalDifference">Meta alcançada no termo 9</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD DA SEQUÊNCIA GERADA -->
+        <article class="card sequence-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-badge">SAÍDA DA ETAPA 2 & 7</span>
+              <h3 class="card-title">Sequência Gerada</h3>
+            </div>
+            <div class="card-header-actions">
+              <button id="copySequenceBtn" class="btn-ghost-sm" title="Copiar termos para a área de transferência">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Copiar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Faixa de Exibição Formatada Estilo Apostila -->
+          <div class="plain-format-box">
+            <div class="format-label">Texto da Saída (Padrão Apostila):</div>
+            <div id="plainSequenceText" class="format-code">5, 8, 11, 14, 17, 20</div>
+          </div>
+
+          <!-- Visualização em Chips Interativos com Posição -->
+          <div class="sequence-chips-container">
+            <div class="chips-header">
+              <span>Termos individuais (passe o cursor para detalhes):</span>
+              <span id="chipsSummaryInfo">6 itens</span>
+            </div>
+            <div id="sequenceChipsList" class="sequence-chips-grid">
+              <!-- Renderizado via JavaScript -->
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD DE VISUALIZAÇÃO GRÁFICA (CANVAS NATIVO) -->
+        <article class="card chart-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-badge">ANÁLISE VISUAL</span>
+              <h3 class="card-title">Curva de Evolução dos Termos</h3>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-color-line"></span> Termo (aₖ)</span>
+              <span class="legend-item"><span class="legend-color-sum"></span> Soma (Sₖ)</span>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="progressionCanvas" width="700" height="240"></canvas>
+            <div id="chartTooltip" class="chart-tooltip hidden"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- SEÇÃO INFERIOR: MEMÓRIA DE CÁLCULO ITERATIVA (ETAPA 3) & REFLEXÃO -->
+    <section class="detailed-analysis-section">
+      <div class="card table-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-badge">ETAPA 3 • DEMONSTRAÇÃO ALGORÍTMICA</span>
+            <h3 class="card-title">Memória de Cálculo Termo a Termo</h3>
+          </div>
+          <button id="toggleTableBtn" class="btn-ghost-sm">Ocultar/Expandir Detalhes</button>
+        </div>
+        <p class="section-explanation">
+          Em conformidade com a <strong>Etapa 3</strong>, o código executa um laço de repetição <code>for</code> que calcula cada termo a partir do anterior e acumula a soma passo a passo.
+        </p>
+        <div id="tableWrapper" class="table-responsive">
+          <table class="calc-table">
+            <thead>
+              <tr>
+                <th>Índice (k)</th>
+                <th>Operação Executada</th>
+                <th>Termo Gerado (aₖ)</th>
+                <th>Soma Acumulada (Sₖ)</th>
+                <th>% do Total</th>
+              </tr>
+            </thead>
+            <tbody id="calculationTableBody">
+              <!-- Preenchido via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p><strong>Projeto 1 – Explorando PA e PG</strong> • Disciplina de Pensamento Computacional & Algoritmos</p>
+        <p>Desenvolvido com <strong>HTML5, CSS3 Puro e JavaScript Moderno</strong> para atender aos requisitos de avaliação e Etapa 7 (Frontend).</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL DE GUIA TEÓRICO, CRITÉRIOS E ETAPA 5 -->
+  <div id="infoModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge">DOCUMENTAÇÃO DO PROJETO</span>
+          <h2 class="modal-title">Sobre o Projeto • Brainstorm & Teoria</h2>
+        </div>
+        <button id="closeInfoModalBtn" class="btn-close" aria-label="Fechar Modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Abas do Modal -->
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" data-modal-tab="tab-brainstorm">Brainstorm de Design</button>
+          <button class="modal-tab-btn" data-modal-tab="tab-reflexao">Respostas da Etapa 5</button>
+        </div>
+
+        <!-- Conteúdo 1: Brainstorm de Design -->
+        <div id="tab-brainstorm" class="modal-tab-content active">
+          <h3>Brainstorming de Design para o Desafio Extra (Etapa 7)</h3>
+          <p>Para criar uma experiência surpreendente (WOW factor) que una rigor matemático e excelência de interface, avaliamos 4 direções estéticas:</p>
+          
+          <div class="brainstorm-cards">
+            <div class="brainstorm-card selected">
+              <div class="badge-tag">DIREÇÃO ADOTADA</div>
+              <h4>1. Scientific Glassmorphism & Math Tech Lab</h4>
+              <p>Interface escura com cartões foscos translúcidos (backdrop-blur), destaques em ciano e violeta elétrico e tipografia matemática precisa (JetBrains Mono). Evoca um laboratório científico avançado.</p>
+              <ul>
+                <li><strong>Pontos Fortes:</strong> Sofisticação imediata, facilidade de leitura noturna, contraste ideal para gráficos.</li>
+                <li><strong>Adequação:</strong> 100% alinhado ao conceito "PA & PG LAB".</li>
+              </ul>
+            </div>
+
+            <div class="brainstorm-card">
+              <h4>2. Academic Neo-Brutalism</h4>
+              <p>Contornos pretos marcantes, sombras duras e cores pastel vibrantes (estilo Figma/Notion interativo).</p>
+              <ul>
+                <li><strong>Pontos Fortes:</strong> Lúdico e didático para salas de aula infantis.</li>
+                <li><strong>Desvantagem:</strong> Cansa a visão em sequências com dezenas de termos.</li>
+              </ul>
+            </div>
+
+            <div class="brainstorm-card">
+              <h4>3. Clean Bento Grid (Apple Dashboard)</h4>
+              <p>Módulos retangulares com cantos arredondados suaves, visual limpo e minimalista.</p>
+              <ul>
+                <li><strong>Incorporação:</strong> O layout deste projeto adota a arquitetura de Bento Grid integrada ao Glassmorphism!</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo 2: Respostas da Etapa 5 -->
+        <div id="tab-reflexao" class="modal-tab-content">
+          <h3>Respostas às Questões da Etapa 5 (Reflexão)</h3>
+          
+          <div class="qa-item">
+            <h4>1. Qual foi a principal diferença entre o algoritmo utilizado para gerar uma PA e o utilizado para gerar uma PG?</h4>
+            <p><strong>Resposta:</strong> A operação aritmética fundamental aplicada ao termo anterior. Na <strong>PA</strong>, somamos uma razão fixa a cada iteração (<code>termo = termo + razao</code>), gerando crescimento linear. Na <strong>PG</strong>, multiplicamos o termo anterior por uma razão ou fator constante (<code>termo = termo * razao</code>), gerando crescimento exponencial.</p>
+          </div>
+
+          <div class="qa-item">
+            <h4>2. Qual foi a função da estrutura de repetição no seu programa?</h4>
+            <p><strong>Resposta:</strong> A estrutura de repetição (<code>for</code> ou <code>while</code>) permite construir a sequência iterativamente passo a passo (Etapa 3), gerando cada termo com base na relação de recorrência matemática e acumulando dinamicamente o valor da soma total a cada iteração, sem depender exclusivamente de fórmulas estáticas prontas.</p>
+          </div>
+
+          <div class="qa-item">
+            <h4>3. Qual foi a maior dificuldade encontrada durante a programação?</h4>
+            <p><strong>Resposta:</strong> O tratamento de casos limites (edge cases), como razão zero, razões negativas (que geram sequências alternadas na PG) e a garantia de que o contador de termos na Etapa 6 (alcançar a meta) pare exatamente quando a soma for estritamente superior ao valor da meta.</p>
+          </div>
+
+          <div class="qa-item">
+            <h4>4. Como você resolveu essa dificuldade?</h4>
+            <p><strong>Resposta:</strong> Utilizando validações prévias das entradas de dados, estruturas condicionais bem delimitadas para identificar o tipo de progressão (crescente, decrescente, constante, oscilante) e testes automatizados baseados nos 4 casos da Etapa 4.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="closeInfoModalFooterBtn" class="btn-primary-sm">Fechar Guia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICAÇÃO TOAST PARA COPIAR / FEEDBACK -->
+  <div id="toastNotification" class="toast hidden">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMessage">Texto copiado!</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
