@@ -1,6 +1,6 @@
 # 📐 PA & PG LAB — Projeto 1: Explorando PA e PG
 
-> **Disciplina:** Pensamento Computacional e Algoritmos  
+> **Disciplina:** Matemática Discreta  
 > 🌐 **Aplicação online (Etapa 7):** [https://melquizedeque-torres.github.io/pa-pg-lab/](https://melquizedeque-torres.github.io/pa-pg-lab/)
 
 ## Objetivo
