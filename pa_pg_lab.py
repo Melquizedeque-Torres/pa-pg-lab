@@ -1,6 +1,6 @@
 """
 PROJETO 1 – EXPLORANDO PA E PG
-Disciplina: Pensamento Computacional & Algoritmos
+Disciplina: Matemática Discreta
 Entregável 1: Código-fonte do programa em Python (.py)
 Atende: Etapa 2 (Menu & Cálculos), Etapa 3 (Iteração Termo a Termo),
         Etapa 4 (Testes) e Etapa 6 (Alcançando a Meta).
