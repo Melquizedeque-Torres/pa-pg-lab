@@ -131,6 +131,22 @@ Os testes foram executados e validados tanto no frontend quanto no script Python
 
 ---
 
+## 🧠 Etapa 1 — Planejamento e Pseudocódigo
+
+As respostas de planejamento, o **pseudocódigo** e os **fluxogramas** (Etapas 2/3 e Etapa 6) estão em [PSEUDOCODIGO.md](PSEUDOCODIGO.md).
+
+Resumo do algoritmo central:
+
+```
+termo <- primeiro_termo ; soma <- 0
+PARA i DE 1 ATÉ n:
+    soma <- soma + termo
+    SE PA: termo <- termo + razao
+    SENÃO: termo <- termo * razao
+```
+
+---
+
 ## 🗂️ 5. Estrutura dos Arquivos Criados
 
 ```
@@ -139,6 +155,7 @@ pa-pg-lab/
 ├── style.css          # Design System completo (Glassmorphism, Bento, temas)
 ├── app.js             # Lógica matemática, Canvas, manipuladores de evento
 ├── standalone.html    # Versão auto-contida em arquivo único (execução offline direta)
+├── PSEUDOCODIGO.md    # Etapa 1: pseudocódigo e fluxogramas
 ├── pa_pg_lab.py       # Código em Python para atender ao entregável 1 (.py)
 └── README.md          # Documentação acadêmica completa e relatórios
 ```
